@@ -1,75 +1,87 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Login } from '@/components/Login';
-import { SuperAdminLayout } from '@/components/SuperAdminLayout';
-import { SuperAdminDashboard } from '@/components/SuperAdminDashboard';
-import { SyndicatsManagement } from '@/components/SyndicatsManagement';
-import { MembersManagement } from '@/components/MembersManagement';
-import { FlaggedContent } from '@/components/FlaggedContent';
-import { SubscriptionPlans } from '@/components/SubscriptionPlans';
-import { PaymentsManagement } from '@/components/PaymentsManagement';
-import { ActivityLogs } from '@/components/ActivityLogs';
-import { BailConfiguration } from '@/components/BailConfiguration';
+import { Register } from '@/components/Register';
+import { ForgotPassword } from '@/components/ForgotPassword';
+import { useAuth } from '@/lib/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 
+/**
+ * Page Principale
+ * 
+ * Cette page :
+ * - Utilise le contexte d'authentification pour vérifier si l'utilisateur est connecté
+ * - Affiche le Login si non connecté
+ * - Redirige vers /dashboard si connecté
+ */
 export default function Home() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
-  const [currentView, setCurrentView] = useState('dashboard');
-  const [viewData, setViewData] = useState<unknown>(null);
+  // 🪝 Utiliser le contexte d'authentification
+  const { isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+  
+  // 📊 États locaux pour la navigation
+  const [showRegister, setShowRegister] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
-  const handleLogin = (email: string) => {
-    setUserEmail(email);
-    setIsAuthenticated(true);
-  };
-
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    setUserEmail('');
-    setCurrentView('dashboard');
-    setViewData(null);
-  };
-
-  const handleNavigate = (view: string, data?: unknown) => {
-    setCurrentView(view);
-    setViewData(data);
-  };
-
-  const renderView = () => {
-    switch (currentView) {
-      case 'dashboard':
-        return <SuperAdminDashboard onNavigate={handleNavigate} />;
-      case 'syndicats':
-        return <SyndicatsManagement onNavigate={handleNavigate} />;
-      case 'members':
-        return <MembersManagement syndicatId={(viewData as { syndicatId?: string })?.syndicatId} />;
-      case 'flagged-content':
-        return <FlaggedContent />;
-      case 'payments':
-        return <PaymentsManagement />;
-      case 'activity-logs':
-        return <ActivityLogs />;
-      case 'subscription-plans':
-        return <SubscriptionPlans />;
-      case 'settings':
-        return <BailConfiguration />;
-      default:
-        return <SuperAdminDashboard onNavigate={handleNavigate} />;
+  // 🔄 Rediriger vers /dashboard si authentifié
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.push('/dashboard');
     }
-  };
+  }, [isAuthenticated, isLoading, router]);
 
-  if (!isAuthenticated) {
-    return <Login onLogin={handleLogin} />;
+  // 🔄 Afficher un loader pendant la vérification de l'authentification
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-[#1877F2] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Chargement...</p>
+        </div>
+      </div>
+    );
   }
 
-  return (
-    <SuperAdminLayout 
-      currentView={currentView} 
-      onChangeView={setCurrentView}
-      userEmail={userEmail}
-      onLogout={handleLogout}
-    >
-      {renderView()}
-    </SuperAdminLayout>
-  );
+  // 🔐 Si non authentifié, afficher le formulaire de login, register ou forgot password
+  if (!isAuthenticated) {
+    if (showForgotPassword) {
+      return (
+        <ForgotPassword 
+          onBack={() => setShowForgotPassword(false)} 
+        />
+      );
+    }
+    
+    if (showRegister) {
+      return (
+        <Register 
+          onSuccess={() => setShowRegister(false)} 
+          onCancel={() => setShowRegister(false)} 
+        />
+      );
+    }
+    
+    return (
+      <Login 
+        onForgotPassword={() => setShowForgotPassword(true)}
+        onRegister={() => setShowRegister(true)}
+      />
+    );
+  }
+
+  // ✅ Si authentifié, afficher un loader pendant la redirection
+  if (isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-[#1877F2] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Redirection...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Cette partie ne devrait jamais s'afficher
+  return null;
 }

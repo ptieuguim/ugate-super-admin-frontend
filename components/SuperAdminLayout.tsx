@@ -32,7 +32,6 @@ interface SuperAdminLayoutProps {
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard Global', icon: LayoutDashboard },
   { id: 'syndicats', label: 'Syndicats', icon: Building2 },
-  { id: 'members', label: 'Membres', icon: Users },
   { id: 'flagged-content', label: 'Contenus Signalés', icon: AlertTriangle, count: 18 },
   { id: 'payments', label: 'Paiements', icon: DollarSign },
   { id: 'activity-logs', label: 'Logs d\'Activité', icon: Activity },
@@ -66,7 +65,7 @@ export const SuperAdminLayout: React.FC<SuperAdminLayoutProps> = ({
       )}
 
       <aside className={`
-        fixed lg:static inset-y-0 left-0 z-50 w-[280px] bg-white/80 backdrop-blur-xl border-r border-gray-200/50 transform transition-all duration-300 ease-out shadow-2xl
+        fixed inset-y-0 left-0 z-50 w-[280px] bg-white/80 backdrop-blur-xl border-r border-gray-200/50 transform transition-all duration-300 ease-out shadow-2xl
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         <div className="h-full flex flex-col">
@@ -142,8 +141,8 @@ export const SuperAdminLayout: React.FC<SuperAdminLayoutProps> = ({
         </div>
       </aside>
 
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <header className="h-20 bg-white/80 backdrop-blur-xl border-b border-gray-200/50 flex items-center justify-between px-4 lg:px-8 sticky top-0 z-30 shadow-sm">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden lg:ml-[280px]">
+        <header className="h-20 bg-white/80 backdrop-blur-xl border-b border-gray-200/50 flex items-center justify-between px-4 lg:px-8 fixed top-0 right-0 left-0 lg:left-[280px] z-30 shadow-sm">
           <div className="flex items-center gap-4">
             <button 
               className="lg:hidden p-2 text-gray-500 hover:bg-gray-100 rounded-xl transition-colors"
@@ -231,7 +230,7 @@ export const SuperAdminLayout: React.FC<SuperAdminLayoutProps> = ({
           </div>
         )}
 
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8 scroll-smooth">
+        <main className="flex-1 overflow-y-auto p-4 lg:p-8 scroll-smooth mt-20">
           <div className="max-w-[1800px] mx-auto">
             {children}
           </div>

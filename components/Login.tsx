@@ -3,39 +3,68 @@
 import React, { useState } from 'react';
 import { Shield, Mail, Lock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { useAuth } from '@/lib/contexts/AuthContext';
+
+/**
+ * Composant Login
+ * 
+ * Ce composant gère l'interface de connexion et utilise :
+ * - Le contexte d'authentification (useAuth) pour la logique
+ * - Le service d'authentification pour les appels API
+ * - La validation locale des champs
+ */
 
 interface LoginProps {
-  onLogin: (email: string) => void;
+  onForgotPassword?: () => void;
+  onRegister?: () => void;
 }
 
-export const Login: React.FC<LoginProps> = ({ onLogin }) => {
-  const [email, setEmail] = useState('');
+export const Login: React.FC<LoginProps> = ({ onForgotPassword, onRegister }) => {
+  // 🪝 Utiliser le contexte d'authentification
+  const { login, error: authError, isLoading: authLoading } = useAuth();
+  
+  // 📊 États locaux pour le formulaire
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [localError, setLocalError] = useState('');
 
+  /**
+   * 📝 FONCTION : Gérer la soumission du formulaire
+   * 
+   * @param e - Événement du formulaire
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setLocalError('');
     
-    if (!email || !password) {
-      setError('Veuillez remplir tous les champs');
+    // VALIDATION 1 : Vérifier que les champs sont remplis
+    if (!identifier || !password) {
+      setLocalError('Veuillez remplir tous les champs');
       return;
     }
 
-    // Vérifier que c'est un email super admin
-    if (!email.includes('superadmin')) {
-      setError('Accès réservé aux super administrateurs uniquement');
+    // VALIDATION 2 : Vérifier la longueur du mot de passe
+    if (password.length < 6) {
+      setLocalError('Le mot de passe doit contenir au moins 6 caractères');
       return;
     }
 
-    setIsLoading(true);
-    
-    // Simuler une connexion
-    setTimeout(() => {
-      onLogin(email);
-      setIsLoading(false);
-    }, 1000);
+    try {
+      // 🔐 Appeler la fonction login du contexte
+      // Cette fonction va :
+      // 1. Appeler l'API d'authentification
+      // 2. Sauvegarder les tokens
+      // 3. Mettre à jour l'état global
+      await login({ identifier, password });
+      
+      // ✅ Si on arrive ici, la connexion a réussi !
+      // Le contexte va automatiquement mettre à jour isAuthenticated
+      // Et app/page.tsx va afficher le dashboard
+      
+    } catch (err) {
+      // ❌ En cas d'erreur, elle sera affichée via authError
+      console.error('Erreur lors de la connexion:', err);
+    }
   };
 
   return (
@@ -54,10 +83,10 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
           </div>
 
           {/* Error Message */}
-          {error && (
+          {(localError || authError) && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
               <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-800">{error}</p>
+              <p className="text-sm text-red-800">{localError || authError}</p>
             </div>
           )}
 
@@ -65,17 +94,17 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email Super Admin
+                Email, Username ou Téléphone
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="text"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
                   className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent transition-all"
                   placeholder="superadmin@ugate.com"
-                  disabled={isLoading}
+                  disabled={authLoading}
                 />
               </div>
             </div>
@@ -92,7 +121,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent transition-all"
                   placeholder="••••••••"
-                  disabled={isLoading}
+                  disabled={authLoading}
                 />
               </div>
             </div>
@@ -102,18 +131,33 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
               variant="primary"
               size="lg"
               className="w-full"
-              isLoading={isLoading}
+              isLoading={authLoading}
             >
-              {isLoading ? 'Connexion en cours...' : 'Se connecter'}
+              {authLoading ? 'Connexion en cours...' : 'Se connecter'}
             </Button>
           </form>
 
-          {/* Demo Info */}
-          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-            <p className="text-xs text-blue-800 text-center">
-              <strong>Mode Démo:</strong> Utilisez un email contenant &quot;superadmin&quot;
-            </p>
-          </div>
+          {/* Liens */}
+          {(onForgotPassword || onRegister) && (
+            <div className="mt-6 flex items-center justify-between text-sm">
+              {onForgotPassword && (
+                <button
+                  onClick={onForgotPassword}
+                  className="text-[#1877F2] hover:underline"
+                >
+                  Mot de passe oublié ?
+                </button>
+              )}
+              {onRegister && (
+                <button
+                  onClick={onRegister}
+                  className="text-[#1877F2] hover:underline"
+                >
+                  Créer un compte
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Footer */}

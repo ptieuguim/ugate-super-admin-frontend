@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/lib/contexts/AuthContext";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -12,6 +13,14 @@ export const metadata: Metadata = {
   description: "Tableau de bord super administrateur pour la gestion globale de la plateforme UGate",
 };
 
+/**
+ * Layout Principal
+ * 
+ * Ce layout enveloppe toute l'application avec :
+ * - La police Inter
+ * - Le AuthProvider pour l'authentification globale
+ * - Les styles globaux
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -22,7 +31,11 @@ export default function RootLayout({
       <body
         className={`${inter.variable} antialiased`}
       >
-        {children}
+        {/* 🔐 AuthProvider enveloppe toute l'application */}
+        {/* Tous les composants enfants peuvent maintenant utiliser useAuth() */}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

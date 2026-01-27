@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Building2, 
   Search, 
@@ -21,7 +21,14 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { Syndicat } from '@/lib/types/superadmin';
+import { 
+  getAllSyndicates, 
+  approveSyndicate, 
+  disapproveSyndicate,
+  activateSyndicate,
+  deactivateSyndicate,
+  SyndicateResponse
+} from '@/lib/services/superadmin.service';
 
 interface SyndicatsManagementProps {
   onNavigate?: (view: string, data?: unknown) => void;
@@ -30,60 +37,32 @@ interface SyndicatsManagementProps {
 export const SyndicatsManagement: React.FC<SyndicatsManagementProps> = ({ onNavigate }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'approved' | 'pending' | 'active' | 'inactive'>('all');
-  const [selectedSyndicat, setSelectedSyndicat] = useState<Syndicat | null>(null);
+  const [selectedSyndicat, setSelectedSyndicat] = useState<SyndicateResponse | null>(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [syndicats, setSyndicats] = useState<SyndicateResponse[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
-  const mockSyndicats: Syndicat[] = [
-    {
-      id: '1',
-      name: 'Syndicat des Enseignants',
-      description: 'Syndicat regroupant les enseignants du secondaire',
-      domain: 'Éducation',
-      type: 'Professionnel',
-      isApproved: false,
-      isActive: true,
-      creationDate: '2024-01-15',
-      lastUpdate: '2024-12-20',
-      organizationId: 'org-1',
-      memberCount: 245,
-      subscriptionPlan: 'Premium',
-      subscriptionExpiry: '2025-01-15',
-    },
-    {
-      id: '2',
-      name: 'Syndicat des Médecins',
-      description: 'Syndicat des professionnels de santé',
-      domain: 'Santé',
-      type: 'Professionnel',
-      isApproved: true,
-      isActive: true,
-      creationDate: '2023-06-10',
-      lastUpdate: '2024-12-15',
-      organizationId: 'org-2',
-      memberCount: 892,
-      subscriptionPlan: 'Enterprise',
-      subscriptionExpiry: '2025-06-10',
-      charteUrl: 'https://example.com/charte.pdf',
-      statusUrl: 'https://example.com/status.pdf',
-    },
-    {
-      id: '3',
-      name: 'Syndicat des Infirmiers',
-      description: 'Syndicat du personnel infirmier',
-      domain: 'Santé',
-      type: 'Professionnel',
-      isApproved: true,
-      isActive: false,
-      creationDate: '2023-09-20',
-      lastUpdate: '2024-11-30',
-      organizationId: 'org-3',
-      memberCount: 567,
-      subscriptionPlan: 'Standard',
-      subscriptionExpiry: '2024-09-20',
-    },
-  ];
+  // Charger les syndicats au montage du composant
+  useEffect(() => {
+    loadSyndicats();
+  }, [currentPage]);
 
-  const filteredSyndicats = mockSyndicats.filter(syndicat => {
+  const loadSyndicats = async () => {
+    try {
+      setIsLoading(true);
+      const response = await getAllSyndicates(currentPage, 10);
+      setSyndicats(response.content);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      console.error('Erreur lors du chargement des syndicats:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const filteredSyndicats = syndicats.filter(syndicat => {
     const matchesSearch = syndicat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          syndicat.domain.toLowerCase().includes(searchTerm.toLowerCase());
     
@@ -96,23 +75,47 @@ export const SyndicatsManagement: React.FC<SyndicatsManagementProps> = ({ onNavi
     return matchesSearch;
   });
 
-  const handleApproveSyndicat = (id: string) => {
-    console.log('Approuver syndicat:', id);
+  const handleApproveSyndicat = async (id: string) => {
+    try {
+      await approveSyndicate(id);
+      await loadSyndicats();
+      console.log('✅ Syndicat approuvé avec succès');
+    } catch (error) {
+      console.error('❌ Erreur lors de l\'approbation:', error);
+    }
   };
 
-  const handleDisapproveSyndicat = (id: string) => {
-    console.log('Désapprouver syndicat:', id);
+  const handleDisapproveSyndicat = async (id: string) => {
+    try {
+      await disapproveSyndicate(id);
+      await loadSyndicats();
+      console.log('✅ Syndicat désapprouvé avec succès');
+    } catch (error) {
+      console.error('❌ Erreur lors de la désapprobation:', error);
+    }
   };
 
-  const handleActivateSyndicat = (id: string) => {
-    console.log('Activer syndicat:', id);
+  const handleActivateSyndicat = async (id: string) => {
+    try {
+      await activateSyndicate(id);
+      await loadSyndicats();
+      console.log('✅ Syndicat activé avec succès');
+    } catch (error) {
+      console.error('❌ Erreur lors de l\'activation:', error);
+    }
   };
 
-  const handleDeactivateSyndicat = (id: string) => {
-    console.log('Désactiver syndicat:', id);
+  const handleDeactivateSyndicat = async (id: string) => {
+    try {
+      await deactivateSyndicate(id);
+      await loadSyndicats();
+      console.log('✅ Syndicat désactivé avec succès');
+    } catch (error) {
+      console.error('❌ Erreur lors de la désactivation:', error);
+    }
   };
 
-  const handleViewProfile = (syndicat: Syndicat) => {
+  const handleViewProfile = (syndicat: SyndicateResponse) => {
     setSelectedSyndicat(syndicat);
     setShowProfileModal(true);
   };
@@ -230,7 +233,7 @@ export const SyndicatsManagement: React.FC<SyndicatsManagementProps> = ({ onNavi
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Calendar className="w-4 h-4" />
-                        <span>Créé le {new Date(syndicat.creationDate).toLocaleDateString()}</span>
+                        <span>Créé le {syndicat.createdAt ? new Date(syndicat.createdAt).toLocaleDateString('fr-FR') : 'N/A'}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <FileText className="w-4 h-4" />
@@ -347,13 +350,7 @@ export const SyndicatsManagement: React.FC<SyndicatsManagementProps> = ({ onNavi
                   <div>
                     <label className="text-sm font-medium text-gray-600">Date de création</label>
                     <p className="text-gray-900 font-semibold mt-1">
-                      {new Date(selectedSyndicat.creationDate).toLocaleDateString()}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Dernière mise à jour</label>
-                    <p className="text-gray-900 font-semibold mt-1">
-                      {new Date(selectedSyndicat.lastUpdate).toLocaleDateString()}
+                      {selectedSyndicat.createdAt ? new Date(selectedSyndicat.createdAt).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}
                     </p>
                   </div>
                   <div className="col-span-2">
@@ -418,15 +415,16 @@ export const SyndicatsManagement: React.FC<SyndicatsManagementProps> = ({ onNavi
                       </a>
                     )}
                     {selectedSyndicat.statusUrl && (
-                      <a
-                        href={selectedSyndicat.statusUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                      <button
+                        onClick={() => {
+                          console.log('📄 URL du document Statuts:', selectedSyndicat.statusUrl);
+                          window.open(selectedSyndicat.statusUrl, '_blank', 'noopener,noreferrer');
+                        }}
+                        className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors w-full text-left"
                       >
                         <Download className="w-5 h-5 text-[#1877F2]" />
                         <span className="font-medium text-gray-900">Statuts</span>
-                      </a>
+                      </button>
                     )}
                     {selectedSyndicat.certificatEngagementUrl && (
                       <a

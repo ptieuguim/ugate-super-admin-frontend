@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Users, 
   Building2, 
@@ -15,16 +15,40 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { getDashboardStats, StatsResponse } from '@/lib/services/superadmin.service';
 
 interface SuperAdminDashboardProps {
   onNavigate: (view: string) => void;
 }
 
 export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ onNavigate }) => {
+  const [statsData, setStatsData] = useState<StatsResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Charger les statistiques au montage du composant
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        setIsLoading(true);
+        const data = await getDashboardStats();
+        setStatsData(data);
+        setError(null);
+      } catch (err) {
+        console.error('Erreur lors du chargement des stats:', err);
+        setError('Impossible de charger les statistiques');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadStats();
+  }, []);
+
   const stats = [
     {
       title: 'Total Syndicats',
-      value: '248',
+      value: isLoading ? '...' : statsData?.totalSyndicats.toString() || '0',
       change: '+12%',
       trend: 'up' as const,
       icon: Building2,
@@ -32,8 +56,17 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ onNavi
       bgColor: 'bg-blue-50',
     },
     {
+      title: 'Syndicats Actifs',
+      value: isLoading ? '...' : statsData?.activeSyndicats.toString() || '0',
+      change: '+8%',
+      trend: 'up' as const,
+      icon: Building2,
+      color: 'text-emerald-600',
+      bgColor: 'bg-emerald-50',
+    },
+    {
       title: 'Membres Actifs',
-      value: '12,543',
+      value: isLoading ? '...' : statsData?.activeMembers.toLocaleString() || '0',
       change: '+8%',
       trend: 'up' as const,
       icon: Users,
@@ -41,22 +74,13 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ onNavi
       bgColor: 'bg-emerald-50',
     },
     {
-      title: 'Revenus Mensuels',
-      value: '€45,230',
+      title: 'Revenus Total',
+      value: isLoading ? '...' : `€${statsData?.totalRevenue.toLocaleString() || '0'}`,
       change: '+23%',
       trend: 'up' as const,
       icon: DollarSign,
       color: 'text-green-600',
       bgColor: 'bg-green-50',
-    },
-    {
-      title: 'Contenus Signalés',
-      value: '18',
-      change: '-5%',
-      trend: 'down' as const,
-      icon: AlertTriangle,
-      color: 'text-red-600',
-      bgColor: 'bg-red-50',
     },
   ];
 
@@ -76,7 +100,6 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ onNavi
 
   const quickActions = [
     { label: 'Gérer Syndicats', icon: Building2, view: 'syndicats', color: 'bg-[#1877F2]' },
-    { label: 'Gérer Membres', icon: Users, view: 'members', color: 'bg-emerald-600' },
     { label: 'Contenus Signalés', icon: AlertTriangle, view: 'flagged-content', color: 'bg-red-600' },
     { label: 'Paiements', icon: DollarSign, view: 'payments', color: 'bg-green-600' },
     { label: 'Logs d&apos;Activité', icon: Activity, view: 'activity-logs', color: 'bg-purple-600' },

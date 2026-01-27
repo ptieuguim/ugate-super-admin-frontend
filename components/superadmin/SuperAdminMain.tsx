@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { SuperAdminLayout } from './SuperAdminLayout';
 import { SuperAdminDashboard } from './SuperAdminDashboard';
 import { SyndicatsManagement } from './SyndicatsManagement';
-import { MembersManagement } from './MembersManagement';
 import { FlaggedContent } from './FlaggedContent';
 import { PaymentsManagement } from './PaymentsManagement';
 import { SubscriptionPlans } from './SubscriptionPlans';
@@ -25,8 +24,6 @@ export const SuperAdminMain: React.FC<SuperAdminMainProps> = ({ userEmail, onLog
         return <SuperAdminDashboard onChangeView={setCurrentView} />;
       case 'syndicats':
         return <SyndicatsManagement />;
-      case 'members':
-        return <MembersManagement />;
       case 'flagged':
         return <FlaggedContent />;
       case 'payments':
