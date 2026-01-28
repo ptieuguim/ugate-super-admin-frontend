@@ -59,7 +59,9 @@ git push -u origin main
 
 5. **Variables d'environnement** (cliquez sur "Environment Variables") :
    ```
-   NEXT_PUBLIC_API_URL=https://ugate.pynfi.com
+   NEXT_PUBLIC_AUTH_API_URL=https://auth-service.pynfi.com/api/auth
+   NEXT_PUBLIC_UGATE_API_URL=https://ugate.pynfi.com
+   NEXT_PUBLIC_APP_NAME=UGate Super Admin
    ```
 
 6. Cliquez sur "Deploy"
@@ -97,10 +99,17 @@ vercel --prod
 Dans le dashboard Vercel, allez dans :
 **Settings** → **Environment Variables**
 
-Ajoutez :
+Ajoutez les trois variables suivantes :
 ```
-NEXT_PUBLIC_API_URL=https://ugate.pynfi.com
+NEXT_PUBLIC_AUTH_API_URL=https://auth-service.pynfi.com/api/auth
+NEXT_PUBLIC_UGATE_API_URL=https://ugate.pynfi.com
+NEXT_PUBLIC_APP_NAME=UGate Super Admin
 ```
+
+**Important :** Ces variables doivent être ajoutées pour les environnements :
+- Production
+- Preview
+- Development
 
 ### Domaine Personnalisé (Optionnel)
 

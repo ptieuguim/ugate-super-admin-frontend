@@ -208,9 +208,28 @@ export const SyndicatsManagement: React.FC<SyndicatsManagementProps> = ({ onNavi
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-4 flex-1">
-                  <div className="w-16 h-16 bg-[#1877F2] rounded-xl flex items-center justify-center shadow-sm">
-                    <Building2 className="w-8 h-8 text-white" />
-                  </div>
+                  {syndicat.logoUrl ? (
+                    <div className="w-16 h-16 rounded-xl overflow-hidden shadow-sm border border-gray-200">
+                      <img 
+                        src={syndicat.logoUrl} 
+                        alt={`Logo ${syndicat.name}`}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          // Fallback vers l'icône si l'image ne charge pas
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          if (target.parentElement) {
+                            target.parentElement.className = 'w-16 h-16 bg-[#1877F2] rounded-xl flex items-center justify-center shadow-sm';
+                            target.parentElement.innerHTML = '<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>';
+                          }
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-16 h-16 bg-[#1877F2] rounded-xl flex items-center justify-center shadow-sm">
+                      <Building2 className="w-8 h-8 text-white" />
+                    </div>
+                  )}
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-lg font-bold text-gray-900">{syndicat.name}</h3>
@@ -323,6 +342,23 @@ export const SyndicatsManagement: React.FC<SyndicatsManagementProps> = ({ onNavi
               </button>
             </div>
             <div className="p-6 space-y-6">
+              {/* Logo Section */}
+              {selectedSyndicat.logoUrl && (
+                <div className="flex justify-center">
+                  <div className="w-32 h-32 rounded-2xl overflow-hidden shadow-lg border-2 border-gray-200">
+                    <img 
+                      src={selectedSyndicat.logoUrl} 
+                      alt={`Logo ${selectedSyndicat.name}`}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+              
               {/* Basic Info */}
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Informations Générales</h3>
