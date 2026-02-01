@@ -287,7 +287,7 @@ export const SubscriptionPlans: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Revenus/Mois</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">€45,230</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">XAF45,230</p>
               </div>
               <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
                 <DollarSign className="w-6 h-6 text-green-600" />
@@ -474,10 +474,10 @@ export const SubscriptionPlans: React.FC = () => {
                       onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent"
                     >
-                      <option value="EUR">EUR (€)</option>
+                      <option value="EUR">EUR (XAF)</option>
                       <option value="USD">USD ($)</option>
                       <option value="GBP">GBP (£)</option>
-                      <option value="XAF">XAF (FCFA)</option>
+                      <option value="XAF">XAF (XAF)</option>
                     </select>
                   </div>
                   <div>

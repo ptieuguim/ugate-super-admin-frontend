@@ -33,7 +33,7 @@ export const PaymentsManagement: React.FC = () => {
       syndicatId: 'syn-1',
       syndicatName: 'Syndicat des Enseignants',
       amount: 149,
-      currency: 'EUR',
+      currency: 'XAF',
       status: 'COMPLETED',
       paymentDate: '2024-12-27T10:30:00',
       paymentMethod: 'Carte bancaire',
@@ -44,7 +44,7 @@ export const PaymentsManagement: React.FC = () => {
       syndicatId: 'syn-2',
       syndicatName: 'Syndicat des Médecins',
       amount: 399,
-      currency: 'EUR',
+      currency: 'XAF',
       status: 'COMPLETED',
       paymentDate: '2024-12-26T14:20:00',
       paymentMethod: 'Virement bancaire',
@@ -55,7 +55,7 @@ export const PaymentsManagement: React.FC = () => {
       syndicatId: 'syn-3',
       syndicatName: 'Syndicat des Infirmiers',
       amount: 49,
-      currency: 'EUR',
+      currency: 'XAF',
       status: 'PENDING',
       paymentDate: '2024-12-27T16:45:00',
       paymentMethod: 'Carte bancaire',
@@ -66,7 +66,7 @@ export const PaymentsManagement: React.FC = () => {
       syndicatId: 'syn-4',
       syndicatName: 'Syndicat des Avocats',
       amount: 149,
-      currency: 'EUR',
+      currency: 'XAF',
       status: 'FAILED',
       paymentDate: '2024-12-25T09:15:00',
       paymentMethod: 'Carte bancaire',
@@ -77,7 +77,7 @@ export const PaymentsManagement: React.FC = () => {
       syndicatId: 'syn-5',
       syndicatName: 'Syndicat des Architectes',
       amount: 149,
-      currency: 'EUR',
+      currency: 'XAF',
       status: 'REFUNDED',
       paymentDate: '2024-12-20T11:00:00',
       paymentMethod: 'Carte bancaire',
@@ -168,7 +168,7 @@ export const PaymentsManagement: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Revenus Totaux</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">€{totalRevenue.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">XAF{totalRevenue.toLocaleString()}</p>
               </div>
               <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
                 <TrendingUp className="w-6 h-6 text-green-600" />
@@ -182,7 +182,7 @@ export const PaymentsManagement: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">En Attente</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">€{pendingAmount}</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">XAF{pendingAmount}</p>
               </div>
               <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center">
                 <Clock className="w-6 h-6 text-orange-600" />

@@ -34,8 +34,10 @@ const NAV_ITEMS = [
   { id: 'syndicats', label: 'Syndicats', icon: Building2 },
   { id: 'flagged-content', label: 'Contenus Signalés', icon: AlertTriangle, count: 18 },
   { id: 'payments', label: 'Paiements', icon: DollarSign },
-  { id: 'activity-logs', label: 'Logs d\'Activité', icon: Activity },
-  { id: 'subscription-plans', label: 'Plans d\'Abonnement', icon: TrendingUp },
+  // TODO: Réactiver quand l'endpoint backend sera implémenté
+  // { id: 'activity-logs', label: 'Logs d\'Activité', icon: Activity },
+  // TODO: Réactiver quand l'endpoint backend pour les plans d'abonnement sera implémenté
+  // { id: 'subscription-plans', label: 'Plans d\'Abonnement', icon: TrendingUp },
   { id: 'settings', label: 'Paramètres', icon: Settings },
 ];
 
@@ -52,7 +54,7 @@ export const SuperAdminLayout: React.FC<SuperAdminLayoutProps> = ({
   const notifications = [
     { id: 1, title: 'Nouveau syndicat en attente', desc: 'Syndicat des Enseignants', time: '2h', unread: true },
     { id: 2, title: 'Contenu signalé', desc: 'Publication inappropriée', time: '4h', unread: true },
-    { id: 3, title: 'Paiement reçu', desc: 'Syndicat des Médecins - €299', time: '6h', unread: false },
+    { id: 3, title: 'Paiement reçu', desc: 'Syndicat des Médecins - 299 XAF', time: '6h', unread: false },
   ];
 
   return (

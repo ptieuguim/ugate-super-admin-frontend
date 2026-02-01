@@ -75,7 +75,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ onNavi
     },
     {
       title: 'Revenus Total',
-      value: isLoading ? '...' : `€${statsData?.totalRevenue.toLocaleString() || '0'}`,
+      value: isLoading ? '...' : `XAF${statsData?.totalRevenue.toLocaleString() || '0'}`,
       change: '+23%',
       trend: 'up' as const,
       icon: DollarSign,

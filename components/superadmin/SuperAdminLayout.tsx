@@ -34,8 +34,10 @@ const NAV_ITEMS = [
   { id: 'members', label: 'Membres', icon: Users },
   { id: 'flagged', label: 'Contenus signalés', icon: Flag, count: 12 },
   { id: 'payments', label: 'Paiements', icon: CreditCard },
-  { id: 'plans', label: 'Plans d\'abonnement', icon: Package },
-  { id: 'logs', label: 'Logs d\'activité', icon: Activity },
+  // TODO: Réactiver quand l'endpoint backend pour les plans d'abonnement sera implémenté
+  // { id: 'plans', label: 'Plans d\'abonnement', icon: Package },
+  // TODO: Réactiver quand l'endpoint backend POST /super-admin/activity-logs sera implémenté
+  // { id: 'logs', label: 'Logs d\'activité', icon: Activity },
   { id: 'bail', label: 'Configuration Bail', icon: Settings },
   { id: 'settings', label: 'Paramètres de compte', icon: User },
 ];

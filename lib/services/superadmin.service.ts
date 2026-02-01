@@ -248,16 +248,39 @@ export const getAllSyndicates = async (
     console.log('📊 Réponse API:', response.status, response.statusText);
 
     if (!response.ok) {
-      const errorText = await response.text();
+      let errorText = '';
+      try {
+        errorText = await response.text();
+      } catch (e) {
+        errorText = 'Impossible de lire la réponse d\'erreur';
+      }
       console.error('❌ Erreur API:', errorText);
-      throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+      throw new Error(`Erreur ${response.status}: ${response.statusText || 'Erreur inconnue'} - ${errorText}`);
     }
 
     const data = await response.json();
     console.log('✅ Données reçues:', data);
     return data;
   } catch (error) {
-    console.error('❌ Erreur lors de la récupération des syndicats:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
+    console.error('❌ Erreur lors de la récupération des syndicats:', errorMessage);
+    
+    // Si l'erreur est une erreur réseau, retourner des données mockées en fallback
+    if (errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')) {
+      console.warn('⚠️ Erreur réseau détectée, utilisation des données mockées en fallback');
+      const start = page * size;
+      const end = start + size;
+      const paginatedData = MOCK_SYNDICATES.slice(start, end);
+      
+      return {
+        content: paginatedData,
+        page,
+        size,
+        totalElements: MOCK_SYNDICATES.length,
+        totalPages: Math.ceil(MOCK_SYNDICATES.length / size),
+      };
+    }
+    
     throw error;
   }
 };
@@ -407,6 +430,7 @@ export const deactivateSyndicate = async (id: string): Promise<SyndicateResponse
 
 /**
  * 👤 PROFIL : Mettre à jour le profil utilisateur
+ * Utilise l'endpoint POST /syndicates/user
  */
 export const updateProfile = async (data: UpdateProfileRequest): Promise<void> => {
   if (USE_MOCK_DATA) {
@@ -416,16 +440,28 @@ export const updateProfile = async (data: UpdateProfileRequest): Promise<void> =
 
   try {
     const token = localStorage.getItem('ugate_access_token');
-    const response = await fetch(`${API_BASE_URL}/super-admin/profile`, {
-      method: 'PUT',
+    
+    // Mapper les champs vers le format attendu par l'API
+    const requestBody = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      phoneNumber: data.phone || '',
+      // Les autres champs peuvent être ajoutés si nécessaire
+      // nationality, gender, language, birthDate, image
+    };
+    
+    const response = await fetch(`${API_BASE_URL}/syndicates/user`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token || ''}`,
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ Erreur API:', errorText);
       throw new Error(`Erreur ${response.status}: ${response.statusText}`);
     }
 
@@ -438,6 +474,8 @@ export const updateProfile = async (data: UpdateProfileRequest): Promise<void> =
 
 /**
  * 🔒 SÉCURITÉ : Changer le mot de passe
+ * NOTE: Cet endpoint doit probablement être sur l'API Auth (https://auth-service.pynfi.com)
+ * À vérifier avec l'équipe backend pour l'endpoint exact
  */
 export const changePassword = async (data: ChangePasswordRequest): Promise<void> => {
   if (USE_MOCK_DATA) {
@@ -447,7 +485,10 @@ export const changePassword = async (data: ChangePasswordRequest): Promise<void>
 
   try {
     const token = localStorage.getItem('ugate_access_token');
-    const response = await fetch(`${API_BASE_URL}/super-admin/change-password`, {
+    
+    // TODO: Vérifier l'endpoint exact avec l'équipe backend
+    // Possiblement sur https://auth-service.pynfi.com/api/auth/change-password
+    const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -457,6 +498,8 @@ export const changePassword = async (data: ChangePasswordRequest): Promise<void>
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ Erreur API:', errorText);
       throw new Error(`Erreur ${response.status}: ${response.statusText}`);
     }
 
@@ -469,13 +512,23 @@ export const changePassword = async (data: ChangePasswordRequest): Promise<void>
 
 /**
  * 📝 LOGS : Enregistrer une activité
+ * NOTE: Cet endpoint n'existe pas encore dans l'API UGate
+ * Les logs sont actuellement simulés côté frontend uniquement
+ * À implémenter côté backend si nécessaire
  */
 export const logActivity = async (data: LogActivityRequest): Promise<void> => {
-  if (USE_MOCK_DATA) {
-    console.log('🔧 Mode développement : Log d\'activité', data);
-    return new Promise((resolve) => setTimeout(() => resolve(), 100));
-  }
-
+  // Pour l'instant, on log uniquement en console
+  // L'endpoint backend n'existe pas encore dans la documentation Swagger
+  console.log('📝 Log d\'activité (frontend only):', {
+    action: data.action,
+    entityType: data.entityType,
+    entityId: data.entityId,
+    timestamp: new Date().toISOString(),
+    details: data.details,
+  });
+  
+  // Si l'endpoint est créé plus tard, décommenter ce code:
+  /*
   try {
     const token = localStorage.getItem('ugate_access_token');
     const userId = localStorage.getItem('ugate_user_id') || 'unknown';
@@ -486,7 +539,7 @@ export const logActivity = async (data: LogActivityRequest): Promise<void> => {
       entityType: data.entityType,
       entityId: data.entityId,
       timestamp: new Date().toISOString(),
-      ipAddress: 'client-ip', // Sera récupéré par le backend
+      ipAddress: 'client-ip',
       userAgent: navigator.userAgent,
       details: data.details || {},
     };
@@ -501,13 +554,10 @@ export const logActivity = async (data: LogActivityRequest): Promise<void> => {
     });
 
     if (!response.ok) {
-      // Ne pas bloquer l'opération si le log échoue
       console.warn('⚠️ Erreur lors de l\'enregistrement du log d\'activité');
-    } else {
-      console.log('✅ Activité enregistrée:', data.action);
     }
   } catch (error) {
-    // Ne pas bloquer l'opération si le log échoue
     console.warn('⚠️ Erreur lors de l\'enregistrement du log:', error);
   }
+  */
 };

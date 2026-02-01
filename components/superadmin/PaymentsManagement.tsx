@@ -35,7 +35,7 @@ export const PaymentsManagement: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-gray-900">€{payment.amount}</p>
+                    <p className="text-2xl font-bold text-gray-900">XAF{payment.amount}</p>
                     <Badge variant={payment.status === 'COMPLETED' ? 'success' : 'warning'}>
                       {payment.status}
                     </Badge>

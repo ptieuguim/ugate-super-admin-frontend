@@ -35,7 +35,7 @@ export const ActivityLogs: React.FC = () => {
       entityType: 'SYNDICAT',
       entityId: 'syn-1',
       entityName: 'Syndicat des Enseignants',
-      timestamp: '2024-12-27T10:30:00',
+      timestamp: '2026-02-01T10:30:00',
       ipAddress: '192.168.1.100',
       userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
       details: {
@@ -51,7 +51,7 @@ export const ActivityLogs: React.FC = () => {
       entityType: 'MEMBER',
       entityId: 'member-5',
       entityName: 'Marie Martin',
-      timestamp: '2024-12-27T09:15:00',
+      timestamp: '2026-02-01T09:15:00',
       ipAddress: '192.168.1.100',
       userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
       details: {
@@ -66,7 +66,7 @@ export const ActivityLogs: React.FC = () => {
       entityType: 'PUBLICATION',
       entityId: 'pub-123',
       entityName: 'Publication #123',
-      timestamp: '2024-12-27T08:45:00',
+      timestamp: '2026-02-01T08:45:00',
       ipAddress: '192.168.1.100',
       userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
       details: {
@@ -82,7 +82,7 @@ export const ActivityLogs: React.FC = () => {
       entityType: 'SUBSCRIPTION_PLAN',
       entityId: 'plan-4',
       entityName: 'Plan Premium Plus',
-      timestamp: '2024-12-26T16:20:00',
+      timestamp: '2026-01-31T16:20:00',
       ipAddress: '192.168.1.100',
       userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
       details: {
@@ -99,7 +99,7 @@ export const ActivityLogs: React.FC = () => {
       entityType: 'SUBSCRIPTION_PLAN',
       entityId: 'plan-2',
       entityName: 'Plan Professional',
-      timestamp: '2024-12-26T14:10:00',
+      timestamp: '2026-01-31T14:10:00',
       ipAddress: '192.168.1.100',
       userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
       details: {
@@ -116,7 +116,7 @@ export const ActivityLogs: React.FC = () => {
       entityType: 'MEMBER',
       entityId: 'member-8',
       entityName: 'Jean Dupont',
-      timestamp: '2024-12-26T11:30:00',
+      timestamp: '2026-01-30T11:30:00',
       ipAddress: '192.168.1.100',
       userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
       details: {
@@ -131,7 +131,7 @@ export const ActivityLogs: React.FC = () => {
       entityType: 'SYNDICAT',
       entityId: 'syn-5',
       entityName: 'Syndicat Test',
-      timestamp: '2024-12-25T15:45:00',
+      timestamp: '2026-01-29T15:45:00',
       ipAddress: '192.168.1.100',
       userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
       details: {

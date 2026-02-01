@@ -40,12 +40,12 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ onChan
     },
     {
       title: 'Revenus Mensuels',
-      value: '€45,230',
+      value: 'XAF45,230',
       change: '+23%',
       trend: 'up',
       icon: DollarSign,
       color: 'emerald',
-      subtitle: 'Objectif: €50,000'
+      subtitle: 'Objectif: XAF50,000'
     },
     {
       title: 'Contenus Signalés',

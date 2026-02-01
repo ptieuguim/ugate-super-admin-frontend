@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { BailConfiguration } from '@/components/BailConfiguration';
+import { AccountSettings } from '@/components/superadmin/AccountSettings';
 
 export default function SettingsPage() {
-  return <BailConfiguration />;
+  return <AccountSettings />;
 }

@@ -29,10 +29,12 @@ export const SuperAdminMain: React.FC<SuperAdminMainProps> = ({ userEmail, onLog
         return <FlaggedContent />;
       case 'payments':
         return <PaymentsManagement />;
-      case 'plans':
-        return <SubscriptionPlans />;
-      case 'logs':
-        return <ActivityLogs />;
+      // TODO: Réactiver quand l'endpoint backend sera implémenté
+      // case 'plans':
+      //   return <SubscriptionPlans />;
+      // TODO: Réactiver quand l'endpoint backend sera implémenté
+      // case 'logs':
+      //   return <ActivityLogs />;
       case 'bail':
         return <BailConfiguration />;
       case 'settings':

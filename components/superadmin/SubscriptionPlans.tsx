@@ -33,7 +33,7 @@ export const SubscriptionPlans: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="mb-6">
-                <span className="text-4xl font-bold text-gray-900">€{plan.price}</span>
+                <span className="text-4xl font-bold text-gray-900">XAF{plan.price}</span>
                 <span className="text-gray-600">/mois</span>
               </div>
               <ul className="space-y-3 mb-6">
