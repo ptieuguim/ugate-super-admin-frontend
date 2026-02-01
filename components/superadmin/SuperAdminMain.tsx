@@ -9,6 +9,7 @@ import { PaymentsManagement } from './PaymentsManagement';
 import { SubscriptionPlans } from './SubscriptionPlans';
 import { ActivityLogs } from './ActivityLogs';
 import { BailConfiguration } from './BailConfiguration';
+import { AccountSettings } from './AccountSettings';
 
 interface SuperAdminMainProps {
   userEmail: string;
@@ -34,6 +35,8 @@ export const SuperAdminMain: React.FC<SuperAdminMainProps> = ({ userEmail, onLog
         return <ActivityLogs />;
       case 'bail':
         return <BailConfiguration />;
+      case 'settings':
+        return <AccountSettings />;
       default:
         return <SuperAdminDashboard onChangeView={setCurrentView} />;
     }

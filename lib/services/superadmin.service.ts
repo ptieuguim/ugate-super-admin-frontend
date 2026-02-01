@@ -12,6 +12,26 @@ const API_BASE_URL = 'https://ugate.pynfi.com';
 // IMPORTANT : Désactivé pour tester avec les vraies données
 const USE_MOCK_DATA = false;
 
+// Types pour les mises à jour de profil
+export interface UpdateProfileRequest {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface LogActivityRequest {
+  action: string;
+  entityType: string;
+  entityId: string;
+  details?: Record<string, unknown>;
+}
+
 // Types pour les réponses API
 export interface StatsResponse {
   totalSyndicats: number;
@@ -382,5 +402,112 @@ export const deactivateSyndicate = async (id: string): Promise<SyndicateResponse
   } catch (error) {
     console.error('❌ Erreur lors de la désactivation du syndicat:', error);
     throw error;
+  }
+};
+
+/**
+ * 👤 PROFIL : Mettre à jour le profil utilisateur
+ */
+export const updateProfile = async (data: UpdateProfileRequest): Promise<void> => {
+  if (USE_MOCK_DATA) {
+    console.log('🔧 Mode développement : Simulation de la mise à jour du profil', data);
+    return new Promise((resolve) => setTimeout(() => resolve(), 300));
+  }
+
+  try {
+    const token = localStorage.getItem('ugate_access_token');
+    const response = await fetch(`${API_BASE_URL}/super-admin/profile`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token || ''}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+    }
+
+    console.log('✅ Profil mis à jour avec succès');
+  } catch (error) {
+    console.error('❌ Erreur lors de la mise à jour du profil:', error);
+    throw error;
+  }
+};
+
+/**
+ * 🔒 SÉCURITÉ : Changer le mot de passe
+ */
+export const changePassword = async (data: ChangePasswordRequest): Promise<void> => {
+  if (USE_MOCK_DATA) {
+    console.log('🔧 Mode développement : Simulation du changement de mot de passe');
+    return new Promise((resolve) => setTimeout(() => resolve(), 300));
+  }
+
+  try {
+    const token = localStorage.getItem('ugate_access_token');
+    const response = await fetch(`${API_BASE_URL}/super-admin/change-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token || ''}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+    }
+
+    console.log('✅ Mot de passe modifié avec succès');
+  } catch (error) {
+    console.error('❌ Erreur lors du changement de mot de passe:', error);
+    throw error;
+  }
+};
+
+/**
+ * 📝 LOGS : Enregistrer une activité
+ */
+export const logActivity = async (data: LogActivityRequest): Promise<void> => {
+  if (USE_MOCK_DATA) {
+    console.log('🔧 Mode développement : Log d\'activité', data);
+    return new Promise((resolve) => setTimeout(() => resolve(), 100));
+  }
+
+  try {
+    const token = localStorage.getItem('ugate_access_token');
+    const userId = localStorage.getItem('ugate_user_id') || 'unknown';
+    
+    const logData = {
+      userId,
+      action: data.action,
+      entityType: data.entityType,
+      entityId: data.entityId,
+      timestamp: new Date().toISOString(),
+      ipAddress: 'client-ip', // Sera récupéré par le backend
+      userAgent: navigator.userAgent,
+      details: data.details || {},
+    };
+
+    const response = await fetch(`${API_BASE_URL}/super-admin/activity-logs`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token || ''}`,
+      },
+      body: JSON.stringify(logData),
+    });
+
+    if (!response.ok) {
+      // Ne pas bloquer l'opération si le log échoue
+      console.warn('⚠️ Erreur lors de l\'enregistrement du log d\'activité');
+    } else {
+      console.log('✅ Activité enregistrée:', data.action);
+    }
+  } catch (error) {
+    // Ne pas bloquer l'opération si le log échoue
+    console.warn('⚠️ Erreur lors de l\'enregistrement du log:', error);
   }
 };

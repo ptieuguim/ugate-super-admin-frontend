@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
   Users, 
+  User,
   Building2,
   Flag,
   CreditCard,
@@ -36,6 +37,7 @@ const NAV_ITEMS = [
   { id: 'plans', label: 'Plans d\'abonnement', icon: Package },
   { id: 'logs', label: 'Logs d\'activité', icon: Activity },
   { id: 'bail', label: 'Configuration Bail', icon: Settings },
+  { id: 'settings', label: 'Paramètres de compte', icon: User },
 ];
 
 export const SuperAdminLayout: React.FC<SuperAdminLayoutProps> = ({ 

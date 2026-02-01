@@ -10,6 +10,9 @@ export const ActivityLogs: React.FC = () => {
     { id: '1', action: 'Syndicat approuvé', user: 'admin@ugate.com', entity: 'Syndicat', timestamp: '2024-12-20 14:30', ip: '192.168.1.1' },
     { id: '2', action: 'Membre désactivé', user: 'admin@ugate.com', entity: 'User', timestamp: '2024-12-20 15:45', ip: '192.168.1.1' },
     { id: '3', action: 'Paiement validé', user: 'admin@ugate.com', entity: 'Payment', timestamp: '2024-12-21 09:15', ip: '192.168.1.1' },
+    { id: '4', action: 'Profil mis à jour', user: 'admin@ugate.com', entity: 'Compte', timestamp: '2024-12-21 10:30', ip: '192.168.1.1' },
+    { id: '5', action: 'Mot de passe modifié', user: 'admin@ugate.com', entity: 'Sécurité', timestamp: '2024-12-21 11:15', ip: '192.168.1.1' },
+    { id: '6', action: 'Préférences de notification mises à jour', user: 'admin@ugate.com', entity: 'Compte', timestamp: '2024-12-21 12:00', ip: '192.168.1.1' },
   ];
 
   return (
